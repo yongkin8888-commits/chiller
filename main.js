@@ -51,7 +51,8 @@ ipcMain.handle('layout-save', async (_event, layout) => {
   const layoutPath = path.join(app.getPath('userData'), 'fridge-layout.json');
   const safeLayout = {
     items: layout && typeof layout.items === 'object' ? layout.items : {},
-    magnets: layout && typeof layout.magnets === 'object' ? layout.magnets : {}
+    magnets: layout && typeof layout.magnets === 'object' ? layout.magnets : {},
+    settings: layout && typeof layout.settings === 'object' ? layout.settings : {}
   };
   await fs.mkdir(path.dirname(layoutPath), { recursive: true });
   await fs.writeFile(layoutPath, JSON.stringify(safeLayout, null, 2), 'utf8');

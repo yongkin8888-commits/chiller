@@ -15,6 +15,7 @@
       <div class="fridge-body">
         <div class="top-cap">
           <span class="brand"><b>CHILLY</b><i>✦</i></span>
+          <button id="settings-button" aria-label="Open fridge settings">⚙</button>
           <button id="quit" aria-label="Close app">×</button>
         </div>
 
@@ -28,17 +29,7 @@
             <div class="cold-label">❄ FRESH ZONE</div>
           </div>
 
-          <div id="food-zone" aria-label="Fridge shelves">
-            <div class="food milk draggable" data-name="milk" style="left:32px;top:48px">MILK</div>
-            <div class="food cake draggable" data-name="cake" style="left:123px;top:55px">🍰</div>
-            <div class="food eggs draggable" data-name="eggs" style="left:207px;top:84px">🥚🥚</div>
-            <div class="food jar draggable" data-name="jam" style="left:35px;top:177px">JAM</div>
-            <div class="food cheese draggable" data-name="cheese" style="left:116px;top:190px">CHEESE</div>
-            <div class="food bowl draggable" data-name="bowl" style="left:218px;top:195px">🍜</div>
-            <div class="food apple-pack draggable" data-name="apples" style="left:33px;top:302px">🍎 🍏</div>
-            <div class="food yogurt draggable" data-name="yogurt" style="left:150px;top:307px">YOGURT</div>
-            <div class="food grapes draggable" data-name="grapes" style="left:231px;top:303px">🍇</div>
-          </div>
+          <div id="food-zone" aria-label="Fridge shelves"></div>
 
           <div id="vegetable-drawer" class="drawer closed" tabindex="0" role="button" aria-label="Vegetable drawer">
             <div class="drawer-bin">
@@ -54,6 +45,21 @@
               <small>FRESH &amp; CRUNCHY</small>
             </div>
           </div>
+
+          <section id="settings-panel" aria-label="Fridge settings">
+            <div class="settings-card">
+              <span class="settings-kicker">CHILLY CONTROL PANEL</span>
+              <h2>Stock the fridge</h2>
+              <p>Choose how many items appear inside.</p>
+
+              <div id="settings-list"></div>
+
+              <div class="settings-actions">
+                <button id="cancel-settings" type="button">Cancel</button>
+                <button id="save-settings" type="button">Save stock</button>
+              </div>
+            </div>
+          </section>
         </div>
 
         <button id="main-door" class="door closed" aria-label="Open refrigerator">
@@ -73,12 +79,6 @@
             <div class="door-rack rack-one"></div>
             <div class="door-rack rack-two"></div>
             <div class="door-rack rack-three"></div>
-            <div class="drink can cola draggable" data-name="cola" style="left:52px;top:105px"><b>POP</b></div>
-            <div class="drink bottle juice draggable" data-name="juice" style="left:120px;top:91px"><span>🍊</span></div>
-            <div class="drink can lime draggable" data-name="lime" style="left:54px;top:235px"><b>LIME</b></div>
-            <div class="drink bottle water draggable" data-name="water" style="left:128px;top:217px"><span>💧</span></div>
-            <div class="drink can grape-soda draggable" data-name="grape" style="left:55px;top:374px"><b>GRAPE</b></div>
-            <div class="drink bottle tea draggable" data-name="tea" style="left:130px;top:357px"><span>🍵</span></div>
           </div>
         </button>
 

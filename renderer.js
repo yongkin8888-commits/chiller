@@ -7,6 +7,29 @@ const topCap = document.querySelector('.top-cap');
 const doorFront = document.querySelector('.door-front');
 const clockTime = document.querySelector('#clock-time');
 const clockDate = document.querySelector('#clock-date');
+const settingsButton = document.querySelector('#settings-button');
+const settingsPanel = document.querySelector('#settings-panel');
+const settingsList = document.querySelector('#settings-list');
+const foodZone = document.querySelector('#food-zone');
+const doorInside = document.querySelector('.door-inside');
+
+const INVENTORY = [
+  { key: 'milk', category: 'Dairy & breakfast', label: 'Milk', detail: 'Milk cartons', className: 'food milk', content: 'MILK', parent: 'body', x: 32, y: 48 },
+  { key: 'eggs', category: 'Dairy & breakfast', label: 'Eggs', detail: 'Egg cartons', className: 'food eggs', content: '&#129370;&#129370;', parent: 'body', x: 207, y: 84 },
+  { key: 'cheese', category: 'Dairy & breakfast', label: 'Cheese', detail: 'Cheese blocks', className: 'food cheese', content: 'CHEESE', parent: 'body', x: 116, y: 190 },
+  { key: 'yogurt', category: 'Dairy & breakfast', label: 'Yogurt', detail: 'Yogurt cups', className: 'food yogurt', content: 'YOGURT', parent: 'body', x: 150, y: 307 },
+  { key: 'cake', category: 'Meals & treats', label: 'Cake', detail: 'Cake slices', className: 'food cake', content: '&#127856;', parent: 'body', x: 123, y: 55 },
+  { key: 'bowl', category: 'Meals & treats', label: 'Noodle bowl', detail: 'Prepared bowls', className: 'food bowl', content: '&#127836;', parent: 'body', x: 218, y: 195 },
+  { key: 'jam', category: 'Meals & treats', label: 'Jam', detail: 'Strawberry jam jars', className: 'food jar', content: 'JAM', parent: 'body', x: 35, y: 177 },
+  { key: 'apples', category: 'Fruit', label: 'Apples', detail: 'Red and green apple packs', className: 'food apple-pack', content: '&#127822; &#127823;', parent: 'body', x: 33, y: 302 },
+  { key: 'grape', category: 'Fruit', label: 'Grapes', detail: 'Fresh grape packs', className: 'food grapes', content: '&#127815;', parent: 'body', x: 231, y: 303 },
+  { key: 'cola', category: 'Door rack drinks', label: 'Cola', detail: 'POP cans', className: 'drink can cola', content: '<b>POP</b>', parent: 'door', x: 52, y: 105 },
+  { key: 'juice', category: 'Door rack drinks', label: 'Orange juice', detail: 'Orange bottles', className: 'drink bottle juice', content: '<span>&#127818;</span>', parent: 'door', x: 120, y: 91 },
+  { key: 'lime', category: 'Door rack drinks', label: 'Lime soda', detail: 'Lime cans', className: 'drink can lime', content: '<b>LIME</b>', parent: 'door', x: 54, y: 235 },
+  { key: 'water', category: 'Door rack drinks', label: 'Water', detail: 'Water bottles', className: 'drink bottle water', content: '<span>&#128167;</span>', parent: 'door', x: 128, y: 217 },
+  { key: 'grapeSoda', category: 'Door rack drinks', label: 'Grape soda', detail: 'Grape cans', className: 'drink can grape-soda', content: '<b>GRAPE</b>', parent: 'door', x: 55, y: 374 },
+  { key: 'tea', category: 'Door rack drinks', label: 'Tea', detail: 'Tea bottles', className: 'drink bottle tea', content: '<span>&#127861;</span>', parent: 'door', x: 130, y: 357 }
+];
 
 let doorOpen = false;
 let drawerOpen = false;
@@ -17,22 +40,28 @@ let drawerDrag = null;
 let magnetDrag = null;
 let suppressDoorClick = false;
 let suppressDrawerClick = false;
+let settingsOpen = false;
+let currentSettings = Object.fromEntries(INVENTORY.map(item => [item.key, 0]));
 const MEMORY_KEY = 'chilly-fridge-layout-v1';
 
 async function readMemory() {
   try {
     const fileMemory = await window.desktopFridge?.loadLayout();
-    if (fileMemory && (Object.keys(fileMemory.items || {}).length || Object.keys(fileMemory.magnets || {}).length)) {
+    if (fileMemory && (
+      Object.keys(fileMemory.items || {}).length ||
+      Object.keys(fileMemory.magnets || {}).length ||
+      Object.keys(fileMemory.settings || {}).length
+    )) {
       return fileMemory;
     }
-    return JSON.parse(localStorage.getItem(MEMORY_KEY)) || { items: {}, magnets: {} };
+    return JSON.parse(localStorage.getItem(MEMORY_KEY)) || { items: {}, magnets: {}, settings: {} };
   } catch {
-    return { items: {}, magnets: {} };
+    return { items: {}, magnets: {}, settings: {} };
   }
 }
 
 async function saveMemory() {
-  const memory = { items: {}, magnets: {} };
+  const memory = { items: {}, magnets: {}, settings: currentSettings };
   dragLayer.querySelectorAll('.draggable[data-name]').forEach(item => {
     memory.items[item.dataset.name] = {
       left: item.style.left,
@@ -58,6 +87,10 @@ async function saveMemory() {
 
 async function restoreMemory() {
   const memory = await readMemory();
+  currentSettings = Object.fromEntries(
+    INVENTORY.map(item => [item.key, clampCount(memory.settings?.[item.key] ?? 0)])
+  );
+  renderStock();
   Object.entries(memory.items || {}).forEach(([name, position]) => {
     const item = document.querySelector(`.draggable[data-name="${CSS.escape(name)}"]`);
     if (!item) return;
@@ -79,6 +112,75 @@ async function restoreMemory() {
   await saveMemory();
 }
 
+function clampCount(value) {
+  return Math.max(0, Math.min(15, Number.parseInt(value, 10) || 0));
+}
+
+function renderStock() {
+  INVENTORY.forEach(definition => {
+    const count = currentSettings[definition.key];
+
+    document.querySelectorAll(`[data-stock-type="${definition.key}"]`).forEach(item => {
+      const itemNumber = Number.parseInt(item.dataset.name.slice(definition.key.length + 1), 10);
+      if (itemNumber > count) item.remove();
+    });
+
+    for (let index = 0; index < count; index += 1) {
+      const itemName = `${definition.key}-${index + 1}`;
+      const existingItem = document.querySelector(`.draggable[data-name="${itemName}"]`);
+      if (existingItem) continue;
+
+      const item = document.createElement('div');
+      item.className = `${definition.className} draggable`;
+      item.dataset.name = itemName;
+      item.dataset.stockType = definition.key;
+      item.innerHTML = definition.content;
+      const columnOffset = (index % 5) * 8;
+      const rowOffset = Math.floor(index / 5) * 8;
+      item.style.left = `${definition.x + columnOffset}px`;
+      item.style.top = `${definition.y + rowOffset}px`;
+      (definition.parent === 'door' ? doorInside : foodZone).appendChild(item);
+      wireDraggable(item);
+    }
+  });
+}
+
+function renderSettingsForm() {
+  settingsList.replaceChildren();
+  let lastCategory = '';
+  INVENTORY.forEach(definition => {
+    if (definition.category !== lastCategory) {
+      const heading = document.createElement('div');
+      heading.className = 'settings-category';
+      heading.textContent = definition.category;
+      settingsList.appendChild(heading);
+      lastCategory = definition.category;
+    }
+
+    const row = document.createElement('label');
+    row.className = 'stock-row';
+    row.innerHTML = `<span><b>${definition.label}</b><small>${definition.detail}</small></span>`;
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.min = '0';
+    input.max = '15';
+    input.value = String(currentSettings[definition.key]);
+    input.dataset.settingKey = definition.key;
+    row.appendChild(input);
+    settingsList.appendChild(row);
+  });
+}
+
+function setSettingsOpen(open) {
+  settingsOpen = open;
+  settingsPanel.classList.toggle('open', open);
+  settingsButton.classList.toggle('active', open);
+  fridge.classList.toggle('settings-state', open);
+  dragLayer.classList.toggle('settings-hidden', open);
+  settingsButton.setAttribute('aria-label', open ? 'Close fridge settings' : 'Open fridge settings');
+  if (open) renderSettingsForm();
+}
+
 function message(text) {
   toast.textContent = text;
   toast.classList.add('show');
@@ -87,6 +189,7 @@ function message(text) {
 }
 
 function setDoor(open) {
+  if (!open && settingsOpen) setSettingsOpen(false);
   doorOpen = open;
   door.classList.toggle('open', open);
   door.classList.toggle('closed', !open);
@@ -266,9 +369,25 @@ window.addEventListener('pointerup', event => {
 });
 
 topCap.addEventListener('pointerdown', event => {
-  if (event.target.closest('#quit')) return;
+  if (event.target.closest('#quit') || event.target.closest('#settings-button')) return;
   event.preventDefault();
   fridgeDrag = { screenX: event.screenX, screenY: event.screenY, moved: false };
+});
+
+settingsButton.addEventListener('click', event => {
+  event.stopPropagation();
+  setSettingsOpen(!settingsOpen);
+});
+
+document.querySelector('#cancel-settings').addEventListener('click', () => setSettingsOpen(false));
+document.querySelector('#save-settings').addEventListener('click', async () => {
+  settingsList.querySelectorAll('[data-setting-key]').forEach(input => {
+    currentSettings[input.dataset.settingKey] = clampCount(input.value);
+  });
+  renderStock();
+  await saveMemory();
+  setSettingsOpen(false);
+  message('Fridge stock saved ✓');
 });
 
 drawer.addEventListener('pointerdown', event => {
