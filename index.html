@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chilly — Desktop Fridge</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="stage">
+    <div id="toast" role="status"></div>
+
+    <section id="fridge" aria-label="Interactive refrigerator">
+      <div class="floor-shadow"></div>
+      <div class="fridge-body">
+        <div class="top-cap">
+          <span class="brand"><b>CHILLY</b><i>✦</i></span>
+          <button id="quit" aria-label="Close app">×</button>
+        </div>
+
+        <div id="interior">
+          <div class="light-glow"></div>
+          <div class="back-wall">
+            <div class="lamp">☀</div>
+            <div class="shelf shelf-one"></div>
+            <div class="shelf shelf-two"></div>
+            <div class="shelf shelf-three"></div>
+            <div class="cold-label">❄ FRESH ZONE</div>
+          </div>
+
+          <div id="food-zone" aria-label="Fridge shelves">
+            <div class="food milk draggable" data-name="milk" style="left:32px;top:48px">MILK</div>
+            <div class="food cake draggable" data-name="cake" style="left:123px;top:55px">🍰</div>
+            <div class="food eggs draggable" data-name="eggs" style="left:207px;top:84px">🥚🥚</div>
+            <div class="food jar draggable" data-name="jam" style="left:35px;top:177px">JAM</div>
+            <div class="food cheese draggable" data-name="cheese" style="left:116px;top:190px">CHEESE</div>
+            <div class="food bowl draggable" data-name="bowl" style="left:218px;top:195px">🍜</div>
+            <div class="food apple-pack draggable" data-name="apples" style="left:33px;top:302px">🍎 🍏</div>
+            <div class="food yogurt draggable" data-name="yogurt" style="left:150px;top:307px">YOGURT</div>
+            <div class="food grapes draggable" data-name="grapes" style="left:231px;top:303px">🍇</div>
+          </div>
+
+          <div id="vegetable-drawer" class="drawer closed" tabindex="0" role="button" aria-label="Vegetable drawer">
+            <div class="drawer-bin">
+              <div class="veggie-pile">
+                <span>🥬</span><span>🥕</span><span>🥦</span><span>🍆</span>
+                <span>🌽</span><span>🥒</span><span>🫑</span><span>🍅</span>
+                <span>🥔</span><span>🧅</span><span>🥕</span><span>🥦</span>
+              </div>
+            </div>
+            <div class="drawer-face">
+              <span>VEGGIES</span>
+              <div class="drawer-handle"></div>
+              <small>FRESH &amp; CRUNCHY</small>
+            </div>
+          </div>
+        </div>
+
+        <button id="main-door" class="door closed" aria-label="Open refrigerator">
+          <div class="door-front">
+            <div class="shine"></div>
+            <div class="handle"></div>
+            <div class="magnet magnet-one door-movable" data-memory-key="cool-vibes">COOL<br><b>VIBES</b></div>
+            <div class="magnet magnet-two door-movable" data-memory-key="heart">♥</div>
+            <div class="note door-movable" data-memory-key="snack-note">DON'T<br>FORGET<br>THE SNACKS!</div>
+            <div id="clock-magnet" class="clock-magnet door-movable" data-memory-key="clock">
+              <time id="clock-time">--:--</time>
+              <span id="clock-date">---</span>
+            </div>
+            <div class="status-dot"></div>
+          </div>
+          <div class="door-inside">
+            <div class="door-rack rack-one"></div>
+            <div class="door-rack rack-two"></div>
+            <div class="door-rack rack-three"></div>
+            <div class="drink can cola draggable" data-name="cola" style="left:52px;top:105px"><b>POP</b></div>
+            <div class="drink bottle juice draggable" data-name="juice" style="left:120px;top:91px"><span>🍊</span></div>
+            <div class="drink can lime draggable" data-name="lime" style="left:54px;top:235px"><b>LIME</b></div>
+            <div class="drink bottle water draggable" data-name="water" style="left:128px;top:217px"><span>💧</span></div>
+            <div class="drink can grape-soda draggable" data-name="grape" style="left:55px;top:374px"><b>GRAPE</b></div>
+            <div class="drink bottle tea draggable" data-name="tea" style="left:130px;top:357px"><span>🍵</span></div>
+          </div>
+        </button>
+
+        <div class="feet"><i></i><i></i></div>
+      </div>
+    </section>
+
+    <div id="drag-layer" aria-hidden="true"></div>
+  </main>
+  <script src="renderer.js"></script>
+</body>
+</html>

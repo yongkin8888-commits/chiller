@@ -1,0 +1,13 @@
+{
+  "name": "desktop-fridge",
+  "version": "1.0.0",
+  "description": "A playful interactive refrigerator for the Windows desktop",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.0.4",
+    "electron": "^43.2.0"
+  }
+}
