@@ -66,10 +66,9 @@ button { font: inherit; color: inherit; }
 .shine { position:absolute;left:28px;top:25px;width:55px;height:455px;border-radius:50%;background:linear-gradient(90deg,transparent,#fff9,transparent);transform:rotate(3deg); }
 .handle { position:absolute;right:22px;top:48px;width:20px;height:190px;border:4px solid var(--ink);border-radius:10px;background:#a8c5c1;box-shadow:inset 5px 0 #dff5f0; }
 .magnet { position:absolute;display:grid;place-items:center;border:3px solid var(--ink);font-weight:900;line-height:1;box-shadow:3px 3px var(--ink); }
-.magnet-one { left:58px;top:74px;width:80px;height:67px;background:var(--mint);transform:rotate(-5deg);font-size:13px; }
-.magnet-one b { color:white;font-size:20px; }
+.magnet-one { left:58px;top:74px;width:80px;height:67px;padding:6px 5px;background:var(--mint);transform:rotate(-5deg);font:900 12px/1.15 "Trebuchet MS";white-space:pre-wrap;overflow:hidden;overflow-wrap:anywhere;text-align:center; }
 .magnet-two { right:75px;top:184px;width:48px;height:48px;border-radius:50%;background:var(--coral);color:white;font-size:24px;transform:rotate(8deg); }
-.note { position:absolute;left:65px;top:265px;width:130px;height:108px;padding:22px 10px 10px;background:#ffe37b;border:3px solid var(--ink);box-shadow:5px 6px var(--ink);font:900 13px/1.25 "Trebuchet MS";transform:rotate(3deg); }
+.note { position:absolute;left:65px;top:265px;width:130px;height:108px;padding:13px 7px 7px;background:#ffe37b;border:3px solid var(--ink);box-shadow:5px 6px var(--ink);font:900 12px/1.18 "Trebuchet MS";transform:rotate(3deg);white-space:pre-wrap;overflow:hidden;overflow-wrap:anywhere;text-align:center; }
 .note:before { content:"";position:absolute;left:42px;top:-12px;width:45px;height:19px;background:#82d4c8aa;transform:rotate(-4deg); }
 .clock-magnet { position:absolute;right:58px;bottom:58px;width:118px;height:74px;padding:8px 6px;border:3px solid var(--ink);border-radius:12px;background:#eef8f5;box-shadow:4px 4px var(--ink);transform:rotate(-2deg);text-align:center;overflow:hidden; }
 .clock-magnet time { display:block;white-space:nowrap;font:900 16px/22px "Trebuchet MS";letter-spacing:.2px;color:#317b75; }
@@ -117,6 +116,9 @@ button { font: inherit; color: inherit; }
 .stock-row span { display:flex;flex-direction:column;gap:3px;text-align:left; }
 .stock-row b { font-size:12px; }.stock-row small { color:#66817d;font-size:8px; }
 .stock-row input { width:52px;height:34px;border:2px solid var(--ink);border-radius:8px;background:#fff;text-align:center;font:900 17px "Trebuchet MS"; }
+.note-editor { display:block;margin:6px 0;padding:8px 9px;border:2px solid var(--ink);border-radius:9px;background:#fff4bd; }
+.note-editor b { display:block;margin-bottom:5px;font-size:11px; }
+.note-editor textarea { display:block;width:100%;height:58px;resize:vertical;padding:7px;border:2px solid var(--ink);border-radius:7px;background:#fff;font:900 12px/1.2 "Trebuchet MS"; }
 .settings-actions { display:flex;gap:10px;margin-top:10px; }
 .settings-actions button { flex:1;padding:11px 5px;border:3px solid var(--ink);border-radius:10px;background:#fff;cursor:pointer;font-weight:900; }
 #save-settings { background:var(--yellow);box-shadow:3px 3px var(--ink); }

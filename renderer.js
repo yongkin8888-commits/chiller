@@ -12,6 +12,8 @@ const settingsPanel = document.querySelector('#settings-panel');
 const settingsList = document.querySelector('#settings-list');
 const foodZone = document.querySelector('#food-zone');
 const doorInside = document.querySelector('.door-inside');
+const greenNote = document.querySelector('[data-memory-key="cool-vibes"]');
+const yellowNote = document.querySelector('[data-memory-key="snack-note"]');
 
 const INVENTORY = [
   { key: 'milk', category: 'Dairy & breakfast', label: 'Milk', detail: 'Milk cartons', className: 'food milk', content: 'MILK', parent: 'body', x: 32, y: 48 },
@@ -42,6 +44,10 @@ let suppressDoorClick = false;
 let suppressDrawerClick = false;
 let settingsOpen = false;
 let currentSettings = Object.fromEntries(INVENTORY.map(item => [item.key, 0]));
+let noteSettings = {
+  green: 'COOL\nVIBES',
+  yellow: "DON'T\nFORGET\nTHE SNACKS!"
+};
 const MEMORY_KEY = 'chilly-fridge-layout-v1';
 
 async function readMemory() {
@@ -61,7 +67,11 @@ async function readMemory() {
 }
 
 async function saveMemory() {
-  const memory = { items: {}, magnets: {}, settings: currentSettings };
+  const memory = {
+    items: {},
+    magnets: {},
+    settings: { ...currentSettings, notes: noteSettings }
+  };
   dragLayer.querySelectorAll('.draggable[data-name]').forEach(item => {
     memory.items[item.dataset.name] = {
       left: item.style.left,
@@ -90,6 +100,11 @@ async function restoreMemory() {
   currentSettings = Object.fromEntries(
     INVENTORY.map(item => [item.key, clampCount(memory.settings?.[item.key] ?? 0)])
   );
+  noteSettings = {
+    green: String(memory.settings?.notes?.green ?? 'COOL\nVIBES'),
+    yellow: String(memory.settings?.notes?.yellow ?? "DON'T\nFORGET\nTHE SNACKS!")
+  };
+  applyNoteText();
   renderStock();
   Object.entries(memory.items || {}).forEach(([name, position]) => {
     const item = document.querySelector(`.draggable[data-name="${CSS.escape(name)}"]`);
@@ -114,6 +129,17 @@ async function restoreMemory() {
 
 function clampCount(value) {
   return Math.max(0, Math.min(15, Number.parseInt(value, 10) || 0));
+}
+
+function applyNoteText() {
+  greenNote.textContent = noteSettings.green;
+  yellowNote.textContent = noteSettings.yellow;
+  greenNote.style.fontSize = noteSettings.green.length > 55
+    ? '8px'
+    : noteSettings.green.length > 28 ? '10px' : '12px';
+  yellowNote.style.fontSize = noteSettings.yellow.length > 90
+    ? '8px'
+    : noteSettings.yellow.length > 55 ? '10px' : '12px';
 }
 
 function renderStock() {
@@ -168,6 +194,27 @@ function renderSettingsForm() {
     input.dataset.settingKey = definition.key;
     row.appendChild(input);
     settingsList.appendChild(row);
+  });
+
+  const heading = document.createElement('div');
+  heading.className = 'settings-category';
+  heading.textContent = 'Door notes';
+  settingsList.appendChild(heading);
+
+  [
+    { key: 'green', label: 'Green note', value: noteSettings.green },
+    { key: 'yellow', label: 'Yellow note', value: noteSettings.yellow }
+  ].forEach(note => {
+    const editor = document.createElement('label');
+    editor.className = 'note-editor';
+    const label = document.createElement('b');
+    label.textContent = note.label;
+    const textarea = document.createElement('textarea');
+    textarea.maxLength = 120;
+    textarea.value = note.value;
+    textarea.dataset.noteKey = note.key;
+    editor.append(label, textarea);
+    settingsList.appendChild(editor);
   });
 }
 
@@ -384,6 +431,10 @@ document.querySelector('#save-settings').addEventListener('click', async () => {
   settingsList.querySelectorAll('[data-setting-key]').forEach(input => {
     currentSettings[input.dataset.settingKey] = clampCount(input.value);
   });
+  settingsList.querySelectorAll('[data-note-key]').forEach(textarea => {
+    noteSettings[textarea.dataset.noteKey] = textarea.value.trim() || ' ';
+  });
+  applyNoteText();
   renderStock();
   await saveMemory();
   setSettingsOpen(false);
