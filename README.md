@@ -34,3 +34,13 @@ release\Chilly Fridge-win32-x64\Chilly Fridge.exe
 
 Keep and distribute the complete `Chilly Fridge-win32-x64` folder because the
 EXE requires the other files inside it.
+
+## Saved Layout
+
+Item positions, quantities, magnets, and notes are saved at:
+
+```text
+%APPDATA%\desktop-fridge\fridge-layout.json
+```
+
+Delete this file while the app is closed to reset the refrigerator.
